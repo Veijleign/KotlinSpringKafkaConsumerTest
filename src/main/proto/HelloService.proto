@@ -1,0 +1,34 @@
+syntax = "proto3";
+package ru.microservices.demo;
+option java_multiple_files = true;
+
+service HelloService {
+  rpc Hello(HelloRequest)
+      returns (HelloResponse) {
+  }
+
+  rpc MoreComplicated(MoreComplicatedRequest)
+      returns (MoreComplicatedResponse) {
+  }
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string full_response = 1;
+}
+
+message MoreComplicatedRequest {
+  int64 id = 1;
+}
+
+message MoreComplicatedResponse {
+  string username = 1;
+  string name = 2;
+  string description = 3;
+  string role = 4;
+  bool is_active = 5;
+  repeated string permissions = 6;
+}

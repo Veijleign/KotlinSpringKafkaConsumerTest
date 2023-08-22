@@ -1,0 +1,100 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.2'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.22'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
+    id "com.google.protobuf" version '0.9.4'
+}
+
+group = 'rui.microservices'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.22.2"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.54.0"
+        }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+            grpckt {}
+        }
+        all()*.builtins {
+            kotlin {}
+        }
+    }
+}
+
+dependencies {
+    //core
+    //implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // kotlin + coroutines
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.0'
+
+
+    //grpc
+    implementation "com.google.protobuf:protobuf-kotlin:3.22.2"
+    implementation "io.grpc:grpc-services:1.54.0" // for proto reflection
+    runtimeOnly "io.grpc:grpc-netty-shaded:1.54.0" // grpc server
+    implementation "io.grpc:grpc-protobuf:1.54.0" // generating and reading proto
+    implementation "io.grpc:grpc-kotlin-stub:1.3.0" // generating grpc classes
+
+    //database
+    runtimeOnly 'org.postgresql:postgresql'
+    //runtimeOnly 'org.postgresql:r2dbc-postgresql'
+
+    //LIQUIBASE
+    implementation "org.liquibase:liquibase-core:4.20.0"
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // KAFKA
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //others
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+
+    //logging
+    implementation 'io.github.oshai:kotlin-logging-jvm:5.1.0'
+}
+
+tasks.withType(KotlinCompile) {
+    kotlinOptions {
+        freeCompilerArgs += '-Xjsr305=strict'
+        jvmTarget = '17'
+    }
+}
