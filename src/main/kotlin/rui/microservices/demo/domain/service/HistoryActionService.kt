@@ -32,9 +32,25 @@ class HistoryActionService(
                 serviceId,
                 entityName,
                 pageable
-            )
+            ).toList()
         }
-            .toList() // need to check later
+    }
+
+        fun getByServiceIdAndEntityNameAndEntityId(
+        serviceId: Long,
+        entityName: String,
+        entityId: Long,
+        pageable: Pageable
+
+    ): List<HistoryAction> {
+            return runBlocking {
+                historyActionDao.getByServiceIdAndEntityNameAndEntityId(
+                    serviceId,
+                    entityName,
+                    entityId,
+                    pageable
+                ).toList()
+            }
     }
 
     @KafkaListener(
@@ -46,34 +62,20 @@ class HistoryActionService(
         @org.springframework.messaging.handler.annotation.Header(KafkaHeaders.RECEIVED_PARTITION) partition: Int
     ) {
         logger.info {
-            "From partition: $partition\n" +
-            "Received message: {$historyActionMessage}"
+            "From partition: $partition\n"
         }
-        /*runBlocking {
-
-            historyActionDao.createNewRecordInDatabase(
-                historyActionMessage
-            )
-        }*/
 
         CoroutineScope(Dispatchers.IO).launch { // хватит ли мощностей Dispatchers.IO?
             logger.info {
-                "I'm working in thread: ${Thread.currentThread().name}"
+                "I'm working in thread: ${Thread.currentThread().name}" +
+                        "Received message: {$historyActionMessage}"
+
             }
+
             historyActionDao.createNewRecordInDatabase(
                 historyActionMessage
             )
         }
-
     }
 
-//    fun getByServiceIdAndEntityNameAndEntityId(
-//        serviceId: Long,
-//        entityName: String,
-//        entityId: Long,
-//        pageable: Pageable
-//
-//    ): List<HistoryAction> {
-//        return
-//    }
 }

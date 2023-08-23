@@ -20,14 +20,32 @@ class HistoryActionDao(
         serviceId: Long,
         entityName: String,
         pageable: Pageable
-    ): Page<HistoryAction> = coroutineHistoryActionRepository
-        .findAllByServiceInstanceIdAndEntityName(
-            serviceId, entityName, pageable
-        )
-        .toPage(pageable)
+    ): Page<HistoryAction> {
+        return coroutineHistoryActionRepository
+            .findAllByServiceInstanceIdAndEntityName(
+                serviceId,
+                entityName
+            )
+            .toPage(pageable)
+    }
+    suspend fun getByServiceIdAndEntityNameAndEntityId(
+        serviceId: Long,
+        entityName: String,
+        entityId: Long,
+        pageable: Pageable
+    ): Page<HistoryAction> {
+        return coroutineHistoryActionRepository
+            .findAllByServiceInstanceIdAndEntityNameAndEntityId(
+                serviceId,
+                entityName,
+                entityId
+            )
+            .toPage(pageable)
+    }
+
 
     @Transactional
-    suspend fun createNewRecordInDatabase( // method must word correctly
+    suspend fun createNewRecordInDatabase(
         message: HistoryActionMessage
     ) {
         coroutineHistoryActionRepository.save(
@@ -46,7 +64,6 @@ class HistoryActionDao(
         )
     }
 
-
 }
 
 
@@ -57,6 +74,12 @@ suspend fun Flow<HistoryAction>.toPage(pageable: Pageable): Page<HistoryAction> 
     val endIndex = startIndex + pageable.pageSize.coerceAtMost(items.size)
     val pageItems = items.subList(startIndex, endIndex)
 
-    return PageImpl(pageItems, pageable, items.size.toLong())
+    return PageImpl(
+        pageItems,
+        pageable,
+        items
+            .size
+            .toLong()
+    )
 }
 

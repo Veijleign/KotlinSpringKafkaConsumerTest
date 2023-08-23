@@ -28,7 +28,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: entity_id
-                  type: TEXT
+                  type: bigint
                   constraints:
                     nullable: false
               - column:

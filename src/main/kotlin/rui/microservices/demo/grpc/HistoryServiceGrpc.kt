@@ -33,18 +33,18 @@ class HistoryServiceGrpc(
         )
     }
 
-//    override suspend fun getHistoryActionByServiceAndEntityId(
-//        request: HistoryActionByServiceAndEntityIdRequest
-//    ): HistoryActionByServiceResponse {
-//        return historyActionMapper.toHistoryActionByServiceResponse(
-//            historyActionService.getByServiceIdAndEntityNameAndEntityId(
-//                request.serviceId,
-//                request.entityName,
-//                request.entityId,
-//                Pageable.ofSize(
-//                    request.count.toInt()
-//                )
-//            )
-//        )
-//    }
+    override suspend fun getHistoryActionByServiceAndEntityId(
+        request: HistoryActionByServiceAndEntityIdRequest
+    ): HistoryActionByServiceResponse {
+        return historyActionMapper.toHistoryActionByServiceResponse(
+            historyActionService.getByServiceIdAndEntityNameAndEntityId(
+                request.serviceId,
+                request.entityName,
+                request.entityId,
+                Pageable.ofSize(
+                    request.count.toInt()
+                )
+            )
+        )
+    }
 }
