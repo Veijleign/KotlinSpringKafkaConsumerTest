@@ -13,11 +13,11 @@ spring:
     topics: createHistoryActionTopic
   # DATABASE CONFIG
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/history_action_db
+    url: r2dbc:postgresql://localhost:5432/kotlin_test_db
     username: postgres
     password: admin
   liquibase:
-    url: jdbc:postgresql://localhost:5432/history_action_db
+    url: jdbc:postgresql://localhost:5432/kotlin_test_db
     user: postgres
     password: admin
     default-schema: public
